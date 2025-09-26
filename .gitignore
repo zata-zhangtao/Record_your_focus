@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Environment variables
+.env
+
+# Generated files and logs
+screenshots/
+activity_log.json
+activity_recorder.log
+activity_recorder_gui.log
