@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Recorder - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>Activity Recorder Settings</h1>
+      <p>Configure your activity recording preferences</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Recording Settings -->
+      <section class="settings-card">
+        <h2>Recording Settings</h2>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <label for="captureInterval">Capture Interval</label>
+            <p class="setting-description">How often to capture screenshots (in minutes)</p>
+          </div>
+          <div class="setting-control">
+            <input type="number" id="captureInterval" min="1" max="60" value="3">
+            <span class="unit">minutes</span>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <label for="autoStart">Auto-start Recording</label>
+            <p class="setting-description">Automatically start recording when browser launches</p>
+          </div>
+          <div class="setting-control">
+            <label class="toggle">
+              <input type="checkbox" id="autoStart">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- API Configuration -->
+      <section class="settings-card">
+        <h2>API Configuration</h2>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <label for="apiKey">DashScope API Key</label>
+            <p class="setting-description">Your Alibaba Cloud DashScope API key for AI analysis</p>
+          </div>
+          <div class="setting-control">
+            <input type="password" id="apiKey" placeholder="Enter your API key">
+            <button class="btn-icon" id="toggleApiKey" title="Show/hide API key">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 4C5.5 4 3.5 5.5 2 8c1.5 2.5 3.5 4 6 4s4.5-1.5 6-4c-1.5-2.5-3.5-4-6-4z" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <label for="modelName">AI Model</label>
+            <p class="setting-description">Qwen vision model to use for analysis</p>
+          </div>
+          <div class="setting-control">
+            <select id="modelName">
+              <option value="qwen3-vl-plus">Qwen3-VL-Plus</option>
+              <option value="qwen3-vl-max">Qwen3-VL-Max</option>
+              <option value="qwen-vl-max">Qwen-VL-Max</option>
+              <option value="qwen-vl-plus">Qwen-VL-Plus</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <label for="thinkingMode">Enable Thinking Mode</label>
+            <p class="setting-description">Allow AI to use extended reasoning for better analysis</p>
+          </div>
+          <div class="setting-control">
+            <label class="toggle">
+              <input type="checkbox" id="thinkingMode" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data Management -->
+      <section class="settings-card">
+        <h2>Data Management</h2>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <label for="retentionDays">Data Retention</label>
+            <p class="setting-description">Number of days to keep activity records</p>
+          </div>
+          <div class="setting-control">
+            <input type="number" id="retentionDays" min="1" max="365" value="30">
+            <span class="unit">days</span>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <label for="maxScreenshots">Maximum Screenshots</label>
+            <p class="setting-description">Maximum number of screenshots to keep</p>
+          </div>
+          <div class="setting-control">
+            <input type="number" id="maxScreenshots" min="10" max="500" value="50">
+            <span class="unit">files</span>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <label>Export Data</label>
+            <p class="setting-description">Download your activity records as JSON</p>
+          </div>
+          <div class="setting-control">
+            <button class="btn btn-secondary" id="exportData">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 2v8m0 0L5 7m3 3l3-3M3 12v1a1 1 0 001 1h8a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section class="settings-card">
+        <h2>About</h2>
+
+        <div class="about-grid">
+          <div class="about-item">
+            <div class="about-label">Version</div>
+            <div class="about-value">1.0.0</div>
+          </div>
+
+          <div class="about-item">
+            <div class="about-label">Native Host</div>
+            <div class="about-value" id="nativeHostStatus">Checking...</div>
+          </div>
+
+          <div class="about-item">
+            <div class="about-label">GitHub</div>
+            <div class="about-value">
+              <a href="https://github.com/yourusername/activity-recorder" target="_blank">View on GitHub</a>
+            </div>
+          </div>
+
+          <div class="about-item">
+            <div class="about-label">Documentation</div>
+            <div class="about-value">
+              <a href="#" id="openDocs">Getting Started Guide</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <button class="btn btn-primary" id="saveSettings">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 4L6 11L3 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Save Settings
+      </button>
+
+      <button class="btn btn-secondary" id="resetSettings">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 8A4 4 0 1 1 8 12M4 8A4 4 0 0 1 8 4M4 8H2m6-6V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Reset to Defaults
+      </button>
+
+      <div class="save-status" id="saveStatus"></div>
+    </footer>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

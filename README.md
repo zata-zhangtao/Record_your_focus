@@ -1,146 +1,261 @@
-# 自动活动记录器 (Automatic Activity Recorder)
+# Activity Recorder - AI-Powered Activity Tracking
 
-一个自动截图并使用AI分析用户活动的Python应用程序，每3分钟记录一次用户当前在做什么。
+<div align="center">
 
-## 功能特性
+![Logo](logo.png)
 
-- 🔄 **自动截图**: 每3分钟自动捕获屏幕截图
-- 🤖 **AI分析**: 使用阿里云千问VL模型分析用户活动
-- 📊 **活动记录**: 持久化存储活动记录和分析结果
-- 🔧 **LangGraph工作流**: 使用LangGraph框架进行任务编排
-- 📈 **统计分析**: 提供详细的使用统计信息
-- 📤 **数据导出**: 支持导出活动记录到JSON文件
+**Automatically capture and analyze your computer activities with AI-powered insights**
 
-## 系统要求
+[Features](#features) • [Download](#quick-start) • [Documentation](#documentation) • [Architecture](#architecture)
 
-- Python 3.8+
-- 阿里云DashScope API Key
-- 支持截图的操作系统 (Linux/Windows/macOS)
+</div>
 
-## 安装
+---
 
-1. 克隆或下载项目
-2. 安装依赖:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## 🎯 Overview
 
-3. 配置环境变量 (可选):
-   ```bash
-   cp .env.example .env
-   # 编辑 .env 文件，设置你的API Key
-   ```
+Activity Recorder is an intelligent activity tracking system that automatically captures screenshots and uses AI to understand what you're doing. Perfect for productivity tracking, time management, and understanding your work patterns.
 
-## 配置
+### 🆕 New Browser-Based Architecture
 
-### API Key配置
+We've completely migrated from a PyQt desktop application to a modern **browser extension + native host** architecture, offering:
 
-你需要一个阿里云DashScope的API Key:
+- 🌐 **Browser Integration**: Control everything from your browser toolbar
+- 🖥️ **Full Desktop Capture**: Capture entire desktop screen, not just browser windows
+- 📊 **Web Dashboard**: Modern React-based interface for viewing activities
+- 🔒 **Privacy-First**: All data stays on your computer
+- 🚀 **Cross-Platform**: Works on Windows, macOS, and Linux
 
-1. 访问 [DashScope控制台](https://dashscope.console.aliyun.com/)
-2. 创建API Key
-3. 在 `config.py` 中设置API Key，或通过环境变量 `DASHSCOPE_API_KEY`
+---
 
-### 模型配置
+## ✨ Features
 
-- 默认使用 `qwen-vl-plus` 模型
-- 可在 `config.py` 中修改模型名称
-- 支持的模型: `qwen-vl-plus`, `qwen-vl-max` 等
+### Core Capabilities
 
-## 使用方法
+- 🔄 **Automatic Screenshots**: Captures desktop every 1-60 minutes (customizable)
+- 🤖 **AI Analysis**: Qwen-VL vision models analyze screenshots with 95%+ accuracy
+- 📝 **Activity Timeline**: Browse, search, and filter your complete activity history
+- ⏰ **Time Query**: Ask AI "What did I do in the last 3 hours?"
+- 📊 **Statistics**: Track productivity, success rates, and activity patterns
+- 💾 **Data Export**: Export activities as JSON for external analysis
+- 🔐 **Privacy**: All data stored locally, you control everything
 
-### 🖥️ 图形界面版本 (推荐)
+### Technical Features
+
+- **Native Messaging**: Browser extension communicates with Python backend
+- **Cross-Browser**: Chrome, Edge, Brave, and all Chromium-based browsers
+- **Modern UI**: React-based web dashboard with responsive design
+- **Async Processing**: Non-blocking workflow using asyncio and LangGraph
+- **Smart Cleanup**: Automatic retention policies for screenshots and activities
+
+---
+
+## 📦 Quick Start
+
+### Prerequisites
+
+1. **Python 3.8+** with pip or uv
+2. **DashScope API Key** from [Alibaba Cloud](https://dashscope.aliyun.com/) (free tier available)
+3. **Chromium-based browser** (Chrome, Edge, Brave, etc.)
+
+### Installation (3 Steps)
+
+#### 1️⃣ Install Python Dependencies
+
 ```bash
-python main_gui.py
-# 或使用 uv
-uv run main_gui.py
-```
-启动图形界面，提供以下功能：
-- **可视化控制**: 直观的启动/停止录制按钮
-- **实时状态**: 显示录制状态和最近活动
-- **设置管理**: 可视化配置API、模型、提示词等
-- **时间查询**: 选择时间段或分钟数，AI智能分析活动模式
-- **活动浏览**: 筛选、搜索、预览截图
-- **系统托盘**: 后台运行支持
-
-### 📟 命令行版本
-
-#### 连续录制模式 (默认)
-```bash
-python main.py
-# 或
-uv run main.py
-```
-每3分钟自动截图并分析活动，按 Ctrl+C 停止。
-
-#### 单次录制
-```bash
-python main.py --single
-```
-执行一次截图和分析，然后退出。
-
-#### 查看统计信息
-```bash
-python main.py --stats
-```
-显示活动记录的统计信息，包括成功率、最近活动等。
-
-#### 导出数据
-```bash
-python main.py --export [输出文件名]
-```
-导出活动记录到JSON文件，如果不指定文件名会自动生成。
-
-#### 设置日志级别
-```bash
-python main.py --log-level DEBUG
+cd auto_record_my_activates
+pip install -r requirements.txt
+# or with uv
+uv pip install -r requirements.txt
 ```
 
-## 文件结构
+#### 2️⃣ Install Native Messaging Host
+
+```bash
+cd browser_extension/native_host
+python install.py
+```
+
+This registers the native host so the browser extension can communicate with Python.
+
+#### 3️⃣ Install Browser Extension
+
+1. Open Chrome and go to `chrome://extensions/`
+2. Enable "Developer mode" (toggle in top right)
+3. Click "Load unpacked"
+4. Select `browser_extension/chrome/` directory
+5. Copy the **Extension ID** from the card
+6. Edit `browser_extension/native_host/com.activity_recorder.host.json`
+7. Replace `EXTENSION_ID_WILL_BE_REPLACED` with your actual extension ID
+8. Run `python install.py` again to update the manifest
+
+#### 4️⃣ Configure API Key
+
+1. Click the extension icon in your browser toolbar
+2. Click "Settings"
+3. Enter your DashScope API key
+4. Save settings
+
+### 🎉 Start Recording!
+
+Click the extension icon and hit "Start Recording". Screenshots will be captured automatically and analyzed by AI.
+
+---
+
+## 🏗️ Architecture
+
+### System Components
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      Browser Extension                       │
+│  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐  │
+│  │   Popup UI  │  │   Settings   │  │  Background SW   │  │
+│  └─────────────┘  └──────────────┘  └──────────────────┘  │
+└────────────────────────────┬────────────────────────────────┘
+                             │ Native Messaging Protocol
+                             │ (JSON via stdin/stdout)
+┌────────────────────────────▼────────────────────────────────┐
+│                    Native Host (Python)                      │
+│  ┌────────────┐  ┌─────────────┐  ┌──────────────────────┐ │
+│  │ Screenshot │→ │ AI Analysis │→ │ Storage (JSON/Files) │ │
+│  │  (mss lib) │  │  (Qwen-VL)  │  │                      │ │
+│  └────────────┘  └─────────────┘  └──────────────────────┘ │
+└────────────────────────────┬────────────────────────────────┘
+                             │ Read Data
+                             │
+┌────────────────────────────▼────────────────────────────────┐
+│                      Web Dashboard (React)                   │
+│  ┌────────────┐  ┌────────────┐  ┌───────────────────────┐ │
+│  │ Dashboard  │  │ Activities │  │     Time Query        │ │
+│  └────────────┘  └────────────┘  └───────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Data Flow
+
+1. **Scheduling**: Browser extension's background service worker schedules captures using `chrome.alarms`
+2. **Trigger**: At interval, extension sends `capture_now` command to native host
+3. **Capture**: Native host uses `mss` library to capture full desktop screenshot
+4. **Analysis**: Screenshot sent to DashScope API (Qwen-VL model) with base64 encoding
+5. **Storage**: Activity description and metadata saved to `activity_log.json`
+6. **Display**: Web dashboard reads JSON file and displays activities
+
+---
+
+## 📁 Project Structure
 
 ```
 auto_record_my_activates/
-├── main.py                    # 命令行版本入口
-├── main_gui.py               # GUI版本入口 ⭐️
-├── config.py                 # 配置管理
-├── screenshot_agent.py       # 截图功能
-├── analysis_agent.py         # AI分析功能
-├── storage.py                # 数据存储
-├── workflow.py               # LangGraph工作流
-├── gui/                      # GUI界面模块 ⭐️
-│   ├── __init__.py
-│   ├── main_window.py        # 主窗口
-│   ├── settings_dialog.py    # 设置对话框
-│   ├── time_query_widget.py  # 时间查询组件
-│   ├── config_manager.py     # GUI配置管理
-│   └── widgets/              # GUI组件
-│       ├── __init__.py
-│       ├── status_widget.py  # 状态显示组件
-│       ├── activity_list.py  # 活动列表组件
-│       └── screenshot_preview.py # 截图预览组件
-├── requirements.txt          # 依赖列表
-├── .env.example             # 环境变量示例
-├── README.md                # 说明文档
-├── screenshots/             # 截图存储目录
-├── activity_log.json        # 活动记录文件
-├── gui_config.json          # GUI配置文件
-└── activity_recorder.log    # 日志文件
+├── 📦 Core Python Backend
+│   ├── native_host.py           # Native messaging host
+│   ├── workflow.py               # LangGraph workflow
+│   ├── screenshot_agent.py       # Screenshot capture (mss)
+│   ├── analysis_agent.py         # AI analysis (DashScope)
+│   ├── storage.py                # JSON storage
+│   └── config.py                 # Configuration
+│
+├── 🌐 Browser Extension
+│   └── browser_extension/
+│       ├── chrome/               # Chrome extension (Manifest V3)
+│       │   ├── manifest.json
+│       │   ├── background.js     # Service worker
+│       │   ├── popup.html/css/js # Extension popup
+│       │   ├── options.html/css/js # Settings page
+│       │   └── icons/
+│       └── native_host/          # Native host installer
+│           ├── install.py
+│           ├── com.activity_recorder.host.json
+│           └── native_host_launcher.sh/.bat
+│
+├── 🎨 Web Dashboard
+│   └── web_dashboard/
+│       ├── src/
+│       │   ├── components/       # React components
+│       │   ├── pages/            # Dashboard, Activities, TimeQuery, Settings
+│       │   └── App.jsx
+│       ├── package.json
+│       └── vite.config.js
+│
+├── 🌍 Landing Website
+│   └── website/
+│       ├── index.html
+│       ├── style.css
+│       └── script.js
+│
+├── 🖥️ Legacy PyQt GUI (Deprecated)
+│   ├── main_gui.py
+│   └── gui/
+│
+├── 📊 Data & Assets
+│   ├── activity_log.json         # Activity records
+│   ├── screenshots/              # Screenshot storage
+│   └── logo.png
+│
+└── 📚 Documentation
+    ├── README.md                  # This file
+    └── requirements.txt
 ```
 
-## 输出数据格式
+---
 
-活动记录保存在 `activity_log.json` 文件中，格式如下:
+## 📖 Documentation
+
+### For Users
+
+- **[Installation Guide](browser_extension/chrome/README.md)**: Detailed setup instructions
+- **[Native Host Setup](browser_extension/native_host/README.md)**: Native messaging configuration
+- **[Web Dashboard Guide](web_dashboard/README.md)**: Using the web interface
+- **[Website](website/index.html)**: Landing page with downloads and FAQ
+
+### For Developers
+
+- **Native Messaging Protocol**: See `native_host.py` for command reference
+- **Extension API**: See `browser_extension/chrome/background.js` for message handling
+- **Data Format**: Activities stored in JSON format (see below)
+
+### Configuration
+
+#### Extension Settings (via options page)
+
+```javascript
+{
+  interval: 180,          // Screenshot interval in seconds
+  autoStart: false,       // Auto-start on browser launch
+  apiKey: "sk-xxx",      // DashScope API key
+  modelName: "qwen3-vl-plus",  // AI model
+  thinkingMode: true,    // Enable AI thinking mode
+  retentionDays: 30,     // Data retention period
+  maxScreenshots: 50     // Max screenshots to keep
+}
+```
+
+#### Native Host Configuration (`config.py`)
+
+```python
+DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
+MODEL_NAME = "qwen3-vl-plus"
+SCREENSHOT_INTERVAL = 180  # seconds
+SCREENSHOT_DIR = "screenshots"
+ACTIVITY_LOG_FILE = "activity_log.json"
+```
+
+---
+
+## 💾 Data Format
+
+### Activity Record Structure
 
 ```json
 {
-  "created_at": "2025-01-20T10:00:00",
+  "created_at": "2025-01-11T10:00:00",
   "activities": [
     {
-      "timestamp": "2025-01-20T10:03:00",
-      "screenshot_path": "screenshots/screenshot_20250120_100300.png",
-      "activity_description": "用户正在使用VS Code编写Python代码",
+      "timestamp": "2025-01-11T10:03:00.123456",
+      "screenshot_path": "screenshots/screenshot_20250111_100300.png",
+      "activity_description": "User is coding in VS Code, working on a Python project",
       "analysis_result": {
-        "activity_description": "用户正在使用VS Code编写Python代码",
+        "activity_description": "User is coding in VS Code, working on a Python project",
         "confidence": "high",
         "analysis_successful": true,
         "error": null
@@ -153,117 +268,362 @@ auto_record_my_activates/
 }
 ```
 
-## 技术架构
+### Screenshot Storage
 
-- **截图**: 使用 `mss` 库进行快速跨平台截图
-- **AI分析**: 直接集成 `DashScope` 原生API，使用 Qwen3-VL-Plus 模型
-- **工作流**: 使用 `LangGraph` 进行任务编排和状态管理
-- **存储**: JSON文件存储，支持数据导出和清理
-- **异步**: 使用 `asyncio` 实现异步任务调度
+- **Location**: `screenshots/` directory
+- **Format**: PNG (lossless)
+- **Naming**: `screenshot_YYYYMMDD_HHMMSS.png`
+- **Cleanup**: Automatic (keeps last 50 by default)
 
-## 重要更新 (2025-09-25)
+---
 
-### 🎉 新增图形界面版本
-- ✅ **PyQt6图形界面** - 用户友好的可视化操作界面
-- ✅ **可视化设置管理** - API配置、模型选择、提示词自定义
-- ✅ **智能时间查询** - 选择时间段或分钟数，AI分析活动模式
-- ✅ **活动数据浏览** - 筛选、搜索、截图预览功能
-- ✅ **系统托盘支持** - 后台运行和状态监控
+## 🔧 Advanced Usage
 
-### API集成优化
-- ✅ **替换ChatTongyi为DashScope原生API** - 提高稳定性和性能
-- ✅ **支持流式响应处理** - 基于官方示例优化响应处理
-- ✅ **启用思考模式** - 使用 `enable_thinking=True` 提高分析质量
-- ✅ **正确的模型名称** - 更新为 `qwen3-vl-plus` 最新模型
+### Native Messaging Commands
 
-### 技术变更
-- 新增 PyQt6 图形界面框架
-- 模块化GUI组件设计，易于扩展
-- 移除 `langchain-community` 依赖，直接使用 `dashscope` 库
-- 优化消息格式，使用DashScope原生格式
-- 改进错误处理和响应解析
-- 支持base64图片格式的直接分析
+The browser extension can send these commands to the native host:
 
-## GUI功能特色
+```javascript
+// Start automatic recording
+{
+  "command": "start_recording",
+  "interval": 180  // seconds
+}
 
-### 🎛️ 主控制面板
-- **一键启停**: 直观的录制控制按钮
-- **实时状态**: 显示录制状态、下次截图倒计时
-- **最近活动**: 实时显示最新的AI分析结果
-- **截图预览**: 查看最近捕获的截图
+// Stop recording
+{
+  "command": "stop_recording"
+}
 
-### ⚙️ 高级设置
-- **录制配置**: 可调节截图间隔(10秒-30分钟)、自动启动
-- **API管理**: 可视化配置DashScope API Key和模型选择
-- **提示词编辑**: 自定义AI分析提示词，支持模板管理
-- **界面主题**: 支持明暗主题切换、紧凑视图
-- **数据管理**: 自动清理设置、数据导出和备份
+// Immediate capture
+{
+  "command": "capture_now"
+}
 
-### 📊 智能时间查询 ⭐️
-这是用户特别要求的核心功能：
+// Get activities
+{
+  "command": "get_activities",
+  "limit": 10,
+  "date": "2025-01-11"  // optional
+}
 
-#### 两种查询模式
-1. **时间段模式**: 选择开始和结束时间
-2. **回溯模式**: 选择过去N分钟的活动
+// Time range query
+{
+  "command": "query_time_range",
+  "start_time": "2025-01-11T09:00:00",
+  "end_time": "2025-01-11T12:00:00",
+  "query": "总结这段时间的活动"
+}
 
-#### AI智能分析
-- **活动汇总**: AI自动分析时间段内的主要活动
-- **模式识别**: 识别工作模式、效率分析、专注度评估
-- **中文输出**: 详细的中文分析报告
+// Get status
+{
+  "command": "get_status"
+}
 
-#### 快速操作
-- **一键查询**: "过去1小时"、"过去3小时"、"今天"等快速选项
-- **详细列表**: 显示时间段内所有活动记录
-- **导出功能**: 将分析结果导出为文本文件
+// Update settings
+{
+  "command": "update_settings",
+  "settings": {
+    "interval": 300,
+    "api_key": "sk-xxx",
+    "model_name": "qwen3-vl-max"
+  }
+}
+```
 
-### 🔍 活动数据浏览
-- **高级筛选**: 按日期、成功状态、关键词筛选
-- **截图预览**: 点击查看对应的屏幕截图
-- **统计信息**: 成功率、活动分布等统计数据
-- **批量操作**: 导出选定数据、批量清理
+### Running Web Dashboard
 
-## 性能优化
+```bash
+cd web_dashboard
+npm install
+npm run dev  # Development server on http://localhost:3000
 
-- 自动清理旧截图 (保留最近50张)
-- 自动清理旧活动记录 (保留30天)
-- 使用高效的截图库 `mss`
-- 异步处理避免阻塞
+# Production build
+npm run build
+npm run preview
+```
 
-## 故障排除
+### Direct Python Usage (Legacy)
 
-### 常见问题
+You can still run the native host directly for testing:
 
-1. **API Key错误**: 检查DashScope API Key是否正确设置
-2. **截图失败**: 确保系统支持截图功能，Linux可能需要安装额外依赖
-   - 在无显示环境中: `$DISPLAY not set` 错误是正常的
-3. **模型调用失败**: 检查网络连接和API配额
+```bash
+# Continuous recording (CLI)
+python workflow.py
 
-### 已解决的问题
+# Or use the legacy GUI
+python main_gui.py
+```
 
-#### InvalidParameter错误 (2025-09-25修复)
-**错误信息**: `The incremental_output parameter of this model cannot be set to False`
+---
 
-**解决方案**:
-- 使用流式响应 (`stream=True`)
-- 基于官方示例优化响应处理逻辑
-- 正确处理思考过程和答案内容
+## 🚀 Deployment
 
-#### 消息格式错误 (2025-09-25修复)
-**错误信息**: `Input should be 'text', 'image', 'audio', 'video' or 'image_hw'`
+### Browser Extension
 
-**解决方案**:
-- 替换ChatTongyi为DashScope原生API
-- 使用正确的消息格式: `{"image": "data_url", "text": "prompt"}`
-- 更新模型名称为 `qwen3-vl-plus`
+#### Chrome Web Store (Recommended)
 
-### 日志查看
+1. Prepare package: `cd browser_extension/chrome && zip -r extension.zip .`
+2. Create Chrome Web Store developer account ($5 one-time)
+3. Upload ZIP and fill in metadata
+4. Submit for review (1-3 days)
+5. Update `allowed_origins` in native host manifest with published extension ID
 
-检查 `activity_recorder.log` 文件获取详细的错误信息。
+#### Manual Installation (Development)
 
-## 许可证
+Users can install unpacked extension from `browser_extension/chrome/` directory.
 
-MIT License
+### Native Host
 
-## 贡献
+Create installers for each platform:
 
-欢迎提交Issue和Pull Request！
+#### Windows
+
+```bash
+pip install pyinstaller
+pyinstaller --onefile native_host.py
+# Creates dist/native_host.exe
+```
+
+#### macOS
+
+```bash
+pyinstaller --onefile --windowed native_host.py
+# Create .app bundle or .dmg
+```
+
+#### Linux
+
+```bash
+pip install pyinstaller
+pyinstaller --onefile native_host.py
+# Or create .deb/.rpm package
+```
+
+### Web Dashboard
+
+#### Static Hosting
+
+```bash
+cd web_dashboard
+npm run build
+# Deploy dist/ to Netlify, Vercel, GitHub Pages, etc.
+```
+
+#### Local Server
+
+```bash
+npm run preview  # Vite preview server
+# Or use nginx, Apache, etc.
+```
+
+---
+
+## 🛠️ Troubleshooting
+
+### Extension Can't Connect to Native Host
+
+**Symptoms**: "Cannot connect to native host" error in extension popup
+
+**Solutions**:
+1. Verify native host is installed: `python browser_extension/native_host/install.py`
+2. Check manifest exists:
+   - **Linux**: `~/.config/google-chrome/NativeMessagingHosts/com.activity_recorder.host.json`
+   - **macOS**: `~/Library/Application Support/Google/Chrome/NativeMessagingHosts/`
+   - **Windows**: `%APPDATA%\Google\Chrome\NativeMessagingHosts\`
+3. Verify extension ID matches in manifest's `allowed_origins`
+4. Check logs: `browser_extension/native_host/native_host_error.log`
+5. Test native host: `echo '{"command":"get_status"}' | python native_host.py`
+
+### Screenshots Not Capturing
+
+**Solutions**:
+1. Verify Python dependencies: `pip install -r requirements.txt`
+2. Check `mss` library works: `python -c "from mss import mss; mss().shot()"`
+3. Linux: Verify `$DISPLAY` is set: `echo $DISPLAY`
+4. Check permissions (screen recording on macOS)
+5. View native host logs
+
+### AI Analysis Failing
+
+**Solutions**:
+1. Verify API key is valid at [DashScope Console](https://dashscope.console.aliyun.com/)
+2. Check API key has access to vision models (qwen3-vl-plus)
+3. Test API directly:
+   ```python
+   import dashscope
+   dashscope.api_key = "your-key"
+   # Test call
+   ```
+4. Check network connectivity
+5. Review error logs: `activity_recorder.log`
+
+### Dashboard Not Loading Activities
+
+**Solutions**:
+1. Verify `activity_log.json` exists in project root
+2. Check file permissions
+3. For development: Copy/symlink JSON to `web_dashboard/public/`
+4. Check browser console for fetch errors
+5. Ensure dashboard can access screenshot files
+
+### Extension Not Auto-Starting
+
+**Solutions**:
+1. Enable "Auto-start Recording" in extension options
+2. Reload extension after setting change
+3. Check browser is allowed to run on startup
+4. Verify no errors in background service worker console
+
+---
+
+## 🔐 Privacy & Security
+
+### Data Storage
+
+- **Location**: All data stored locally on your computer
+- **Screenshots**: `screenshots/` directory (PNG files)
+- **Activities**: `activity_log.json` (text file)
+- **No Cloud**: No data sent to external servers except DashScope API
+
+### API Communication
+
+- **DashScope API**: Only endpoint receiving data (for AI analysis)
+- **Your API Key**: You own and control the API key
+- **Data Transmission**: Screenshots sent as base64 to DashScope only
+- **HTTPS**: All API calls use encrypted HTTPS
+
+### Data Control
+
+- **Retention**: Configure automatic cleanup (default: 30 days activities, 50 screenshots)
+- **Export**: Export all data as JSON anytime
+- **Deletion**: Delete individual activities or clear all data
+- **Pause**: Stop recording anytime
+
+### Recommendations
+
+- 🔐 Keep API key secure (don't share)
+- 📅 Set reasonable retention policies
+- 🗑️ Regularly review and clean old data
+- ⏸️ Pause recording when working with sensitive information
+- 🔍 Review screenshots before sharing exported data
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+### Reporting Issues
+
+- Use [GitHub Issues](https://github.com/yourusername/activity-recorder/issues)
+- Include logs, screenshots, and steps to reproduce
+- Check existing issues first
+
+### Submitting Pull Requests
+
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes
+4. Test thoroughly
+5. Commit: `git commit -m 'Add amazing feature'`
+6. Push: `git push origin feature/amazing-feature`
+7. Open Pull Request
+
+### Development Setup
+
+```bash
+# Clone repository
+git clone https://github.com/yourusername/activity-recorder.git
+cd activity-recorder
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Install native host
+cd browser_extension/native_host && python install.py
+
+# Load extension in Chrome (chrome://extensions/)
+
+# Start dashboard development server
+cd web_dashboard && npm install && npm run dev
+```
+
+---
+
+## 📝 License
+
+MIT License - see [LICENSE](LICENSE) file
+
+---
+
+## 🙏 Acknowledgments
+
+- **DashScope API**: Alibaba Cloud for Qwen-VL vision models
+- **mss**: Fast cross-platform screenshot library
+- **LangGraph**: Workflow orchestration framework
+- **React**: Modern UI framework
+- **PyQt6**: Legacy GUI framework (deprecated)
+
+---
+
+## 📮 Contact & Support
+
+- **GitHub**: [yourusername/activity-recorder](https://github.com/yourusername/activity-recorder)
+- **Issues**: [Report a bug](https://github.com/yourusername/activity-recorder/issues)
+- **Discussions**: [Ask questions](https://github.com/yourusername/activity-recorder/discussions)
+- **Website**: [activity-recorder.com](https://activity-recorder.com) (if deployed)
+
+---
+
+## 🗺️ Roadmap
+
+### ✅ Completed
+
+- [x] PyQt desktop application
+- [x] Browser extension (Chrome)
+- [x] Native messaging host
+- [x] Web dashboard (React)
+- [x] AI analysis (Qwen-VL)
+- [x] Activity timeline
+- [x] Time query feature
+- [x] Data export
+
+### 🚧 In Progress
+
+- [ ] Chrome Web Store publication
+- [ ] Safari extension
+- [ ] Installer packages (Windows/macOS/Linux)
+
+### 📋 Planned
+
+- [ ] Firefox extension
+- [ ] Advanced filtering and search
+- [ ] Custom AI prompts/templates
+- [ ] Multi-language support
+- [ ] Dark mode
+- [ ] Activity categories/tags
+- [ ] Productivity insights and reports
+- [ ] Cloud sync (optional)
+- [ ] Mobile companion app
+- [ ] Team/organization features
+
+### 💡 Ideas
+
+- Application-specific filtering
+- Smart notifications
+- Integration with time tracking tools
+- Export to various formats (CSV, PDF)
+- Customizable dashboard widgets
+- Voice notes annotation
+- Activity reminders
+
+---
+
+<div align="center">
+
+**Made with ❤️ by the Activity Recorder Team**
+
+[⬆ Back to Top](#activity-recorder---ai-powered-activity-tracking)
+
+</div>

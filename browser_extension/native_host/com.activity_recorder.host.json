@@ -1,0 +1,9 @@
+{
+  "name": "com.activity_recorder.host",
+  "description": "Activity Recorder Native Messaging Host",
+  "path": "REPLACE_WITH_ABSOLUTE_PATH/native_host_launcher.sh",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://EXTENSION_ID_WILL_BE_REPLACED/"
+  ]
+}

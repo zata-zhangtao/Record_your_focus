@@ -4,6 +4,7 @@ Main Window for Activity Recorder GUI
 """
 
 import sys
+import os
 import asyncio
 import logging
 import contextlib
@@ -256,6 +257,12 @@ class MainWindow(QMainWindow):
     def init_ui(self):
         """Initialize the user interface"""
         self.setWindowTitle("活动记录器 - Auto Activity Recorder")
+
+        # Set window icon using the YEWMOON logo
+        icon_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logo.png')
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
+
         self.setMinimumSize(1200, 800)
 
         # Central widget
@@ -414,10 +421,16 @@ class MainWindow(QMainWindow):
         if not QSystemTrayIcon.isSystemTrayAvailable():
             return
 
-        # Create tray icon (using a simple colored pixmap as placeholder)
-        pixmap = QPixmap(16, 16)
-        pixmap.fill(Qt.GlobalColor.blue)
-        self.tray_icon = QSystemTrayIcon(QIcon(pixmap), self)
+        # Create tray icon using the YEWMOON logo
+        icon_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logo.png')
+        if os.path.exists(icon_path):
+            icon = QIcon(icon_path)
+        else:
+            # Fallback to colored pixmap if logo not found
+            pixmap = QPixmap(16, 16)
+            pixmap.fill(Qt.GlobalColor.blue)
+            icon = QIcon(pixmap)
+        self.tray_icon = QSystemTrayIcon(icon, self)
 
         # Create tray menu
         tray_menu = QMenu()
@@ -765,6 +778,10 @@ class MainWindow(QMainWindow):
         # Check if we should minimize to tray instead of closing
         minimize_to_tray = self.gui_config.get("general.minimize_to_tray", True)
 
+        # On macOS, always quit instead of minimizing to tray when close button is clicked
+        if sys.platform == "darwin":
+            minimize_to_tray = False
+
         if minimize_to_tray and self.tray_icon and self.tray_icon.isVisible() and not self._force_quit:
             # Minimize to system tray
             event.ignore()
@@ -848,6 +865,11 @@ def main():
     app.setApplicationName("Auto Activity Recorder")
     app.setApplicationDisplayName("活动记录器")
     app.setApplicationVersion("1.0.0")
+
+    # Set application icon for macOS dock
+    icon_path = os.path.join(os.path.dirname(__file__), '..', 'logo.png')
+    if os.path.exists(icon_path):
+        app.setWindowIcon(QIcon(icon_path))
 
     # Create and show main window
     main_window = MainWindow()

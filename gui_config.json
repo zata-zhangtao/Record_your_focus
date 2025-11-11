@@ -2,8 +2,8 @@
   "window": {
     "width": 1453,
     "height": 800,
-    "x": 462,
-    "y": 176,
+    "x": 276,
+    "y": 193,
     "maximized": false
   },
   "recording": {
@@ -14,7 +14,7 @@
   },
   "api": {
     "api_key": "sk-1e631a8dda5f46cba0ef26a6bf1dcbd1",
-    "model_name": "qwen3-vl-plus",
+    "model_name": "qwen3-vl-plus-2025-09-23",
     "base_url": "https://dashscope.aliyuncs.com/api/v1"
   },
   "prompts": {

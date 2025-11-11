@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Recorder - AI-Powered Activity Tracking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav container">
+      <div class="nav-brand">
+        <svg class="logo" width="32" height="32" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+          <circle cx="12" cy="12" r="3" fill="currentColor"/>
+        </svg>
+        <span>Activity Recorder</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#download">Download</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="https://github.com/yourusername/activity-recorder" target="_blank">GitHub</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">Never Forget What You Did</h1>
+        <p class="hero-subtitle">
+          Automatically capture and analyze your computer activities with AI-powered insights.
+          Track your productivity, understand your work patterns, and never lose track of time again.
+        </p>
+        <div class="hero-buttons">
+          <a href="#download" class="btn btn-primary btn-lg">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 3v10m0 0l-4-4m4 4l4-4M4 15v1a2 2 0 002 2h8a2 2 0 002-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Download Now
+          </a>
+          <a href="#how-it-works" class="btn btn-secondary btn-lg">Learn More</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="images/hero-screenshot.png" alt="Activity Recorder Dashboard" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features section">
+    <div class="container">
+      <h2 class="section-title">Powerful Features</h2>
+      <p class="section-subtitle">Everything you need to track and understand your activities</p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #E3F2FD;">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <rect x="4" y="4" width="24" height="24" rx="4" stroke="#2196F3" stroke-width="2"/>
+              <circle cx="16" cy="16" r="4" fill="#2196F3"/>
+            </svg>
+          </div>
+          <h3>Automatic Screenshots</h3>
+          <p>Captures your screen at customizable intervals (every 1-60 minutes) without disrupting your workflow.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #F3E5F5;">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="12" stroke="#9C27B0" stroke-width="2"/>
+              <path d="M16 10v6l4 3" stroke="#9C27B0" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>AI-Powered Analysis</h3>
+          <p>Qwen-VL vision models analyze screenshots to understand what you were doing with high accuracy.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #E8F5E9;">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M4 8h24M4 16h24M4 24h24" stroke="#4CAF50" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Activity Timeline</h3>
+          <p>Browse your complete activity history with search, filters, and visual timeline views.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #FFF3E0;">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M10 16l4 4 8-8" stroke="#FF9800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="4" y="4" width="24" height="24" rx="4" stroke="#FF9800" stroke-width="2"/>
+            </svg>
+          </div>
+          <h3>Time Query</h3>
+          <p>Ask AI to summarize what you did during any time period - perfect for time tracking and reporting.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #FCE4EC;">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M16 4v24M8 12l8-8 8 8M8 20l8 8 8-8" stroke="#E91E63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Privacy First</h3>
+          <p>All data stored locally on your computer. You control your data, API key, and retention policies.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon" style="background: #E0F2F1;">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <rect x="6" y="6" width="20" height="20" rx="2" stroke="#009688" stroke-width="2"/>
+              <path d="M12 6v4M20 6v4M6 14h20" stroke="#009688" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Cross-Platform</h3>
+          <p>Works on Windows, macOS, and Linux. Chrome, Edge, Brave, and other Chromium browsers supported.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download Section -->
+  <section id="download" class="download section section-dark">
+    <div class="container">
+      <h2 class="section-title">Download Activity Recorder</h2>
+      <p class="section-subtitle">Choose your platform and get started in minutes</p>
+
+      <div class="download-grid">
+        <!-- Browser Extension -->
+        <div class="download-card">
+          <div class="download-header">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/>
+              <circle cx="24" cy="24" r="12" stroke="currentColor" stroke-width="2"/>
+              <circle cx="24" cy="24" r="4" fill="currentColor"/>
+            </svg>
+            <h3>Browser Extension</h3>
+          </div>
+          <p class="download-description">
+            Install the browser extension to control recording and view your activities.
+          </p>
+          <div class="download-buttons">
+            <a href="https://chrome.google.com/webstore" target="_blank" class="btn btn-primary btn-block">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              Chrome Web Store
+            </a>
+            <a href="./downloads/activity-recorder-chrome-v1.0.0.zip" class="btn btn-secondary btn-block" download>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 3v10m0 0l-4-4m4 4l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Download ZIP
+            </a>
+          </div>
+          <p class="download-note">Supports Chrome, Edge, Brave, Opera</p>
+        </div>
+
+        <!-- Native Host -->
+        <div class="download-card">
+          <div class="download-header">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 20h16M16 24h16M16 28h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <h3>Native Host</h3>
+          </div>
+          <p class="download-description">
+            Required for desktop screenshot capture. Runs in the background.
+          </p>
+          <div class="download-buttons">
+            <a href="./downloads/activity-recorder-windows-v1.0.0.exe" class="btn btn-primary btn-block" download>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <rect x="3" y="3" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              Windows Installer
+            </a>
+            <a href="./downloads/activity-recorder-macos-v1.0.0.dmg" class="btn btn-primary btn-block" download>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 3a7 7 0 100 14 7 7 0 000-14z" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              macOS Installer
+            </a>
+            <a href="./downloads/activity-recorder-linux-v1.0.0.AppImage" class="btn btn-primary btn-block" download>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              Linux AppImage
+            </a>
+          </div>
+          <p class="download-note">Python 3.8+ required</p>
+        </div>
+
+        <!-- Web Dashboard -->
+        <div class="download-card">
+          <div class="download-header">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="10" width="36" height="28" rx="2" stroke="currentColor" stroke-width="2"/>
+              <path d="M6 18h36" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="14" r="1" fill="currentColor"/>
+              <circle cx="16" cy="14" r="1" fill="currentColor"/>
+              <circle cx="20" cy="14" r="1" fill="currentColor"/>
+            </svg>
+            <h3>Web Dashboard</h3>
+          </div>
+          <p class="download-description">
+            Optional web interface for viewing and analyzing activities.
+          </p>
+          <div class="download-buttons">
+            <a href="https://github.com/yourusername/activity-recorder" target="_blank" class="btn btn-secondary btn-block">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 3a7 7 0 00-2.2 13.6c.3 0 .5-.1.5-.3v-1c-2 .4-2.4-1-2.4-1-.3-.8-.8-1-.8-1-.7-.4 0-.4 0-.4.7 0 1.1.7 1.1.7.6 1.1 1.7.8 2.1.6 0-.4.3-.8.5-1-1.6-.2-3.2-.8-3.2-3.5 0-.8.3-1.4.7-1.9 0-.2-.3-.9.1-1.9 0 0 .6-.2 1.9.7a6.5 6.5 0 013.4 0c1.3-.9 1.9-.7 1.9-.7.4 1 .1 1.7.1 1.9.4.5.7 1.1.7 1.9 0 2.7-1.6 3.3-3.2 3.5.3.2.5.7.5 1.4v2.1c0 .2.2.4.5.3A7 7 0 0010 3z" fill="currentColor"/>
+              </svg>
+              View on GitHub
+            </a>
+          </div>
+          <p class="download-note">Self-hosted, Node.js required</p>
+        </div>
+      </div>
+
+      <div class="download-info">
+        <p><strong>Installation Instructions:</strong></p>
+        <ol>
+          <li>Install the Native Host for your platform</li>
+          <li>Install the Browser Extension</li>
+          <li>Get a free DashScope API key from <a href="https://dashscope.aliyun.com/" target="_blank">Alibaba Cloud</a></li>
+          <li>Configure your API key in the extension settings</li>
+          <li>Start recording!</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="how-it-works section">
+    <div class="container">
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">Simple, automated, and intelligent</p>
+
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Automatic Capture</h3>
+          <p>The browser extension schedules screenshot captures at your chosen interval (e.g., every 3 minutes).</p>
+        </div>
+
+        <div class="step-arrow">→</div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Desktop Screenshot</h3>
+          <p>The native host captures your entire desktop screen using system APIs.</p>
+        </div>
+
+        <div class="step-arrow">→</div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>AI Analysis</h3>
+          <p>Qwen-VL vision model analyzes the screenshot and generates a description of your activity.</p>
+        </div>
+
+        <div class="step-arrow">→</div>
+
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Store & Browse</h3>
+          <p>Activity is saved locally. View timeline, search, and query your activities anytime.</p>
+        </div>
+      </div>
+
+      <div class="architecture-diagram">
+        <img src="images/architecture.png" alt="Architecture Diagram" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="faq section section-dark">
+    <div class="container">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h3>Is my data private?</h3>
+          <p>Yes! All screenshots and activity data are stored locally on your computer. The only external communication is with DashScope API for AI analysis, using your own API key. You have full control over data retention and deletion.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>How much does it cost?</h3>
+          <p>Activity Recorder is free and open source. You only pay for the DashScope API usage, which offers a generous free tier. Typical usage costs less than $1-2 per month.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>What browsers are supported?</h3>
+          <p>All Chromium-based browsers: Chrome, Edge, Brave, Opera, Vivaldi, and more. Firefox and Safari support coming soon.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Can I use it offline?</h3>
+          <p>Screenshots can be captured offline, but AI analysis requires internet connection to reach DashScope API. Offline activities will be analyzed when you're back online.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>How accurate is the AI analysis?</h3>
+          <p>Qwen-VL models are highly accurate at understanding screen content. Accuracy depends on screenshot clarity and content complexity. Success rate is typically 95%+.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Can I exclude certain applications?</h3>
+          <p>Currently, the extension captures all visible screen content. Application-specific filtering is planned for a future release. You can pause recording anytime.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>How do I get a DashScope API key?</h3>
+          <p>Sign up for a free account at <a href="https://dashscope.aliyun.com/" target="_blank">dashscope.aliyun.com</a>. Navigate to the API Keys section and create a new key. Free tier includes 1 million tokens per month.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Is this open source?</h3>
+          <p>Yes! Activity Recorder is open source under [Your License]. View the code, report issues, and contribute on <a href="https://github.com/yourusername/activity-recorder" target="_blank">GitHub</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <svg class="logo" width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="3" fill="currentColor"/>
+          </svg>
+          <span>Activity Recorder</span>
+        </div>
+
+        <div class="footer-links">
+          <div class="footer-column">
+            <h4>Product</h4>
+            <ul>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#download">Download</a></li>
+              <li><a href="#how-it-works">How It Works</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-column">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="./docs/installation.html">Installation Guide</a></li>
+              <li><a href="./docs/user-guide.html">User Guide</a></li>
+              <li><a href="https://github.com/yourusername/activity-recorder" target="_blank">GitHub</a></li>
+              <li><a href="https://github.com/yourusername/activity-recorder/issues" target="_blank">Report Issue</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-column">
+            <h4>Legal</h4>
+            <ul>
+              <li><a href="./privacy.html">Privacy Policy</a></li>
+              <li><a href="./terms.html">Terms of Service</a></li>
+              <li><a href="./license.html">License</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Activity Recorder. Open Source Project.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
