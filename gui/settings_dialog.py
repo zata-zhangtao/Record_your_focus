@@ -28,51 +28,93 @@ class APITestWorker(QObject):
     test_started = pyqtSignal()
     test_completed = pyqtSignal(bool, str)  # success, message
 
-    def __init__(self, api_key: str, model_name: str):
+    def __init__(self, api_key: str, model_name: str, enable_thinking: bool, thinking_budget: int):
         super().__init__()
         self.api_key = api_key
         self.model_name = model_name
+        self.enable_thinking = enable_thinking
+        self.thinking_budget = thinking_budget
 
     def run_test(self):
         """Run API connection test"""
         self.test_started.emit()
 
         try:
-            # Temporarily update config for testing
-            original_api_key = Config.DASHSCOPE_API_KEY
-            original_model = Config.MODEL_NAME
+            # Save test config to a temporary location
+            import json
+            import tempfile
+            import os
 
-            Config.DASHSCOPE_API_KEY = self.api_key
-            Config.MODEL_NAME = self.model_name
+            # Create temporary GUI config for testing
+            test_config = {
+                "api": {
+                    "api_key": self.api_key,
+                    "model_name": self.model_name,
+                    "base_url": "https://dashscope.aliyuncs.com/api/v1"
+                },
+                "recording": {
+                    "enable_thinking": self.enable_thinking,
+                    "thinking_budget": self.thinking_budget
+                }
+            }
 
-            # Create test agent
-            agent = AnalysisAgent()
+            # Save to temporary file and use it for testing
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False, encoding='utf-8') as f:
+                json.dump(test_config, f)
+                temp_config_path = f.name
 
-            # Create a simple test image (red square)
-            import base64
-            from PIL import Image
-            import io
+            try:
+                # Temporarily override the config file path
+                original_config_file = Config.GUI_CONFIG_FILE
+                Config.GUI_CONFIG_FILE = temp_config_path
 
-            test_img = Image.new('RGB', (100, 100), color='red')
-            buffer = io.BytesIO()
-            test_img.save(buffer, format='PNG')
-            test_image_b64 = base64.b64encode(buffer.getvalue()).decode()
+                # Create test agent (will read from temp config)
+                agent = AnalysisAgent()
 
-            # Test analysis
-            result = agent.analyze_screenshot(test_image_b64, "API连接测试")
+                # Create a simple test image with text
+                import base64
+                from PIL import Image, ImageDraw, ImageFont
+                import io
 
-            # Restore original config
-            Config.DASHSCOPE_API_KEY = original_api_key
-            Config.MODEL_NAME = original_model
+                # Create a more realistic test image
+                test_img = Image.new('RGB', (400, 200), color='white')
+                draw = ImageDraw.Draw(test_img)
 
-            if result.get('analysis_successful', False):
-                self.test_completed.emit(True, "API连接测试成功！")
-            else:
-                error_msg = result.get('error', '未知错误')
-                self.test_completed.emit(False, f"API测试失败: {error_msg}")
+                # Draw some text to make it more like a real screenshot
+                try:
+                    # Try to use a default font, fall back to default if not available
+                    font = ImageFont.load_default()
+                except:
+                    font = None
+
+                draw.text((20, 80), "API Connection Test", fill='black', font=font)
+                draw.text((20, 110), "测试 API 连接", fill='blue', font=font)
+
+                buffer = io.BytesIO()
+                test_img.save(buffer, format='PNG')
+                test_image_b64 = base64.b64encode(buffer.getvalue()).decode()
+
+                # Test analysis
+                result = agent.analyze_screenshot(test_image_b64, "API连接测试")
+
+                # Restore original config
+                Config.GUI_CONFIG_FILE = original_config_file
+
+                if result.get('analysis_successful', False):
+                    self.test_completed.emit(True, f"API连接测试成功！\n分析结果: {result.get('activity_description', 'N/A')[:50]}...")
+                else:
+                    error_msg = result.get('error', '未知错误')
+                    self.test_completed.emit(False, f"API测试失败: {error_msg}")
+
+            finally:
+                # Clean up temp file
+                if os.path.exists(temp_config_path):
+                    os.unlink(temp_config_path)
 
         except Exception as e:
-            self.test_completed.emit(False, f"API测试异常: {str(e)}")
+            import traceback
+            error_detail = traceback.format_exc()
+            self.test_completed.emit(False, f"API测试异常: {str(e)}\n详细信息: {error_detail[:200]}")
 
 
 class SettingsDialog(QDialog):
@@ -235,6 +277,8 @@ class SettingsDialog(QDialog):
         • qwen3-vl-plus: 最新的多模态模型，推荐使用
         • qwen-vl-plus: 经典版本，稳定性好
         • qwen-vl-max: 最高性能版本，成本较高
+
+        注意: 如果分析失败，请尝试关闭"思考模式"
         """)
         model_info.setWordWrap(True)
         model_info.setStyleSheet("color: #666; font-size: 11px; margin: 5px;")
@@ -627,14 +671,20 @@ class SettingsDialog(QDialog):
             QMessageBox.warning(self, "警告", "请选择模型")
             return
 
+        # Get thinking settings
+        enable_thinking = self.thinking_cb.isChecked()
+        thinking_budget = self.thinking_budget_spin.value()
+
         # Show progress
         self.test_btn.setEnabled(False)
         self.test_progress.setVisible(True)
         self.test_progress.setRange(0, 0)  # Indeterminate progress
-        self.test_result_label.setText("正在测试连接...")
+
+        thinking_status = f"(思考模式: {'开启' if enable_thinking else '关闭'})" if enable_thinking else ""
+        self.test_result_label.setText(f"正在测试连接... {thinking_status}")
 
         # Create test worker
-        self.test_worker = APITestWorker(api_key, model_name)
+        self.test_worker = APITestWorker(api_key, model_name, enable_thinking, thinking_budget)
         self.test_thread = QThread()
 
         self.test_worker.moveToThread(self.test_thread)

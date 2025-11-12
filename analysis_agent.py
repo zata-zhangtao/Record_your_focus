@@ -57,22 +57,47 @@ class AnalysisAgent:
                 }
             ]
 
-            # Call DashScope MultiModalConversation API with streaming (as shown in your example)
-            response = MultiModalConversation.call(
-                model=self.config.get_model_name(),
-                messages=messages,
-                stream=True,  # Use streaming as in your example
-                # Enable thinking for better analysis (only for supported models)
-                enable_thinking=True,
-                thinking_budget=50
-            )
+            # Get thinking settings from config
+            enable_thinking = self.config.get_enable_thinking()
+            thinking_budget = self.config.get_thinking_budget()
 
-            # Process the streaming response (based on your example)
+            # Prepare API call parameters
+            api_params = {
+                "model": self.config.get_model_name(),
+                "messages": messages,
+                "stream": True,
+            }
+
+            # Only add thinking parameters if enabled
+            if enable_thinking:
+                api_params["enable_thinking"] = True
+                api_params["thinking_budget"] = thinking_budget
+                logging.info(f"Calling API with thinking enabled (budget: {thinking_budget})")
+            else:
+                logging.info("Calling API without thinking mode")
+
+            # Call DashScope MultiModalConversation API
+            response = MultiModalConversation.call(**api_params)
+
+            # Check if response is None
+            if response is None:
+                raise Exception("API returned None - this may indicate the model does not support the requested features. Try disabling 'thinking mode' in settings.")
+
+            # Process the streaming response
             reasoning_content = ""
             answer_content = ""
             is_answering = False
 
             for chunk in response:
+                # Check if chunk has the expected structure
+                if not hasattr(chunk, 'output') or not hasattr(chunk.output, 'choices'):
+                    logging.warning(f"Unexpected chunk structure: {chunk}")
+                    continue
+
+                if not chunk.output.choices:
+                    logging.warning("Empty choices in chunk")
+                    continue
+
                 # Handle empty responses
                 message = chunk.output.choices[0].message
                 reasoning_content_chunk = message.get("reasoning_content", None)
@@ -97,8 +122,17 @@ class AnalysisAgent:
                     "error": None
                 }
             else:
-                raise Exception("No answer content received")
+                raise Exception("No answer content received from API")
 
+        except AttributeError as e:
+            error_msg = f"API response format error: {str(e)}. The model may not support thinking mode. Try disabling it in settings."
+            logging.error(error_msg)
+            return {
+                "activity_description": "Analysis failed",
+                "confidence": "low",
+                "analysis_successful": False,
+                "error": error_msg
+            }
         except Exception as e:
             logging.error(f"Failed to analyze screenshot: {str(e)}")
             return {
@@ -161,7 +195,9 @@ class AnalysisAgent:
 2. 是否有明显的工作模式或趋势？
 3. 用户的专注度如何？
 
-请用简洁的中文回答。"""
+请用简洁的中文回答。
+
+重要格式要求：最后一段话必须按照"<工作内容>(专注度)"的格式输出，总长度不能超过20个字。例如："编程开发(高度专注)"或"浏览网页(中等专注)"。"""
 
             # Use regular Generation API for text-only analysis
             response = Generation.call(
