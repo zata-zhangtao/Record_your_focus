@@ -84,14 +84,31 @@ class ActivityStorage:
             limit (int): Maximum number of activities to return
 
         Returns:
-            List[Dict[str, Any]]: List of recent activities
+            List[Dict[str, Any]]: Recent activities ordered from newest to oldest
         """
         try:
             data = self._load_data()
             activities = data.get("activities", [])
 
-            # Return most recent activities
-            return activities[-limit:] if activities else []
+            if not activities:
+                return []
+
+            # Normalize limit so we can safely slice and always return newest-first.
+            if limit is None:
+                normalized_limit = len(activities)
+            else:
+                try:
+                    normalized_limit = int(limit)
+                except (TypeError, ValueError):
+                    normalized_limit = len(activities)
+
+            if normalized_limit <= 0:
+                return []
+
+            recent_activities = activities[-normalized_limit:]
+
+            # Return newest records first so UIs that slice the first page show recent data.
+            return list(reversed(recent_activities))
 
         except Exception as e:
             logging.error(f"Failed to get recent activities: {str(e)}")
