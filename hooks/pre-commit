@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+"""
+Git Pre-commit Hook - 大文件检测和自动处理
+
+功能说明：
+---------
+此钩子在每次 git commit 前自动执行，用于防止大文件（≥50MB）被提交到 Git 仓库。
+这有助于避免 GitHub 的文件大小限制问题（50MB 警告，100MB 硬限制）。
+
+工作流程：
+---------
+1. 检查暂存区（staged）中的所有文件
+2. 计算每个文件的大小
+3. 对于大于等于 50MB 的文件：
+   - 自动添加到 .gitignore 文件
+   - 从 Git 暂存区移除
+   - 重置文件状态
+   - 阻止本次提交并提示用户
+
+优势：
+-----
+- 防止误提交大文件导致仓库体积膨胀
+- 自动化处理，无需手动操作
+- 保护开发者避免推送失败
+- 符合 Git 最佳实践
+
+注意事项：
+---------
+- 文件会被自动添加到 .gitignore，需要手动确认
+- 大文件建议使用 Git LFS 或其他存储方案
+- 如需强制提交，可使用 git commit --no-verify
+
+作者：Zata
+版本：0.1
+"""
+import subprocess
+import os
+
+
+if __name__ == "__main__":
+    # 获取暂存区中所有文件的状态
+    # --cached: 只查看暂存区的变更
+    # --name-status: 显示文件名和状态（A=新增, M=修改, D=删除）
+    files = subprocess.check_output(['git', 'diff', '--cached', '--name-status'], text=True, encoding='utf-8').split('\n')
+
+    # 遍历每个文件
+    for file in files:
+        # 检查文件状态是否有效，且不是删除操作（'D'）
+        if len(file.split("\t")[0]) > 0 and file.split("\t")[0] != 'D':
+            # 提取文件路径（格式：状态\t文件路径）
+            file_path = file.split("\t")[-1]
+
+            # 获取文件大小（字节）
+            file_size = os.path.getsize(file_path)
+
+            # 转换为 MB（1 MB = 1024 * 1024 字节）
+            size_in_mb = file_size / (1024 * 1024)
+
+            # 检查文件是否超过 50MB 阈值
+            if size_in_mb >= 50:
+                # 将大文件路径添加到 .gitignore
+                # 'a' 模式：追加写入，不覆盖原有内容
+                with open('.gitignore', 'a', encoding='utf-8') as f:
+                    f.write(file_path + '\n')
+
+                try:
+                    # 从 Git 索引（暂存区）移除文件
+                    # --cached: 只从索引移除，保留工作目录中的文件
+                    subprocess.check_output(['git', 'rm', '--cached', file_path])
+                    print("Removed {} from stage".format(file_path))
+                except subprocess.CalledProcessError as e:
+                    print("Error removing file from stage: {}".format(e))
+
+                try:
+                    # 重置文件状态，取消暂存
+                    subprocess.check_output(['git', 'reset', file_path])
+                except subprocess.CalledProcessError as e:
+                    print("Error while resetting file: {}".format(e))
+
+                # 提示用户并阻止提交
+                print("The file is larger than 50MB and has been added to .gitignore. Please confirm and recommit!")
+                print(file_path + "\n")
+
+                # 返回非零退出码，阻止 git commit 继续执行
+                exit(1)
+
+
