@@ -9,6 +9,41 @@ export default function TimeQuery() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [hourlyDate, setHourlyDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [selectedHour, setSelectedHour] = useState(null)
+
+  const hourlyPresetHours = Array.from({ length: 16 }, (_, idx) => 9 + idx)
+
+  function formatDateTimeLocal(date) {
+    return format(date, "yyyy-MM-dd'T'HH:mm")
+  }
+
+  function handleHourlyPreset(hour) {
+    const baseDateString = hourlyDate || format(new Date(), 'yyyy-MM-dd')
+    const baseDate = new Date(`${baseDateString}T00:00`)
+
+    if (Number.isNaN(baseDate.getTime())) {
+      setError('Please select a valid date for hourly query')
+      return
+    }
+
+    const start = new Date(baseDate)
+    if (hour === 24) {
+      start.setDate(start.getDate() + 1)
+      start.setHours(0, 0, 0, 0)
+    } else {
+      start.setHours(hour, 0, 0, 0)
+    }
+
+    const end = new Date(start)
+    end.setHours(end.getHours() + 1)
+
+    setStartTime(formatDateTimeLocal(start))
+    setEndTime(formatDateTimeLocal(end))
+    setSelectedHour(hour)
+    setResult(null)
+    setError(null)
+  }
 
   async function handleQuery() {
     if (!startTime || !endTime) {
@@ -82,7 +117,10 @@ export default function TimeQuery() {
                 id="startTime"
                 type="datetime-local"
                 value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
+                onChange={(e) => {
+                  setStartTime(e.target.value)
+                  setSelectedHour(null)
+                }}
                 className="form-input"
               />
             </div>
@@ -93,10 +131,44 @@ export default function TimeQuery() {
                 id="endTime"
                 type="datetime-local"
                 value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
+                onChange={(e) => {
+                  setEndTime(e.target.value)
+                  setSelectedHour(null)
+                }}
                 className="form-input"
               />
             </div>
+          </div>
+
+          <div className="hourly-section">
+            <div className="hourly-header">
+              <label>Hourly Quick Query</label>
+              <input
+                type="date"
+                value={hourlyDate}
+                onChange={(e) => {
+                  setHourlyDate(e.target.value)
+                  setSelectedHour(null)
+                }}
+                className="form-input hourly-date-input"
+              />
+            </div>
+
+            <div className="hour-grid">
+              {hourlyPresetHours.map((hour) => (
+                <button
+                  type="button"
+                  key={hour}
+                  className={`hour-btn${selectedHour === hour ? ' active' : ''}`}
+                  onClick={() => handleHourlyPreset(hour)}
+                  title={hour === 24 ? '00:00 - 01:00 (next day)' : `${hour.toString().padStart(2, '0')}:00 - ${(hour + 1).toString().padStart(2, '0')}:00`}
+                >
+                  {hour}
+                </button>
+              ))}
+            </div>
+
+            <p className="hourly-hint">Pick a date and tap an hour to auto-fill the range (24 = midnight of the next day).</p>
           </div>
 
           <div className="form-group">

@@ -5,8 +5,8 @@ Time Query Widget
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QLabel,
-    QPushButton, QDateTimeEdit, QSpinBox, QComboBox, QTextEdit,
-    QProgressBar, QRadioButton, QButtonGroup, QSplitter,
+    QPushButton, QDateTimeEdit, QDateEdit, QSpinBox, QComboBox, QTextEdit,
+    QProgressBar, QRadioButton, QButtonGroup, QSplitter, QGridLayout,
     QListWidget, QListWidgetItem, QMessageBox, QFrame, QFormLayout
 )
 from PyQt6.QtCore import Qt, QDateTime, QDate, QTime, pyqtSignal, QThread, QObject
@@ -135,6 +135,52 @@ class TimeQueryWidget(QWidget):
         self.end_datetime.setCalendarPopup(True)
         time_range_layout.addRow("结束时间:", self.end_datetime)
 
+        # Hourly quick query controls
+        self._setting_hourly_range = False
+        hourly_widget = QWidget()
+        hourly_layout = QVBoxLayout(hourly_widget)
+        hourly_layout.setContentsMargins(0, 0, 0, 0)
+        hourly_layout.setSpacing(8)
+
+        hourly_header_layout = QHBoxLayout()
+        hourly_header_layout.setContentsMargins(0, 0, 0, 0)
+        hourly_header_layout.addWidget(QLabel("选择日期:"))
+
+        self.hourly_date_edit = QDateEdit()
+        self.hourly_date_edit.setCalendarPopup(True)
+        self.hourly_date_edit.setDate(QDate.currentDate())
+        self.hourly_date_edit.dateChanged.connect(self.clear_hourly_selection)
+        hourly_header_layout.addWidget(self.hourly_date_edit)
+        hourly_header_layout.addStretch()
+        hourly_layout.addLayout(hourly_header_layout)
+
+        hour_grid = QGridLayout()
+        hour_grid.setHorizontalSpacing(6)
+        hour_grid.setVerticalSpacing(6)
+
+        self.hour_button_group = QButtonGroup(self)
+        self.hour_button_group.setExclusive(True)
+
+        hours = list(range(9, 25))
+        columns = 8
+        for index, hour in enumerate(hours):
+            btn = QPushButton(f"{hour:02d}")
+            btn.setCheckable(True)
+            btn.clicked.connect(lambda checked, h=hour: self.set_hourly_range(h))
+            self.hour_button_group.addButton(btn, hour)
+            row = index // columns
+            col = index % columns
+            hour_grid.addWidget(btn, row, col)
+
+        hourly_layout.addLayout(hour_grid)
+
+        hint_label = QLabel("提示: 选择日期后点击小时，自动填充对应的一小时区间 (24=次日00:00-01:00)")
+        hint_label.setWordWrap(True)
+        hint_label.setStyleSheet("color: #666; font-size: 12px;")
+        hourly_layout.addWidget(hint_label)
+
+        time_range_layout.addRow("小时快捷:", hourly_widget)
+
         # Quick time range buttons
         quick_range_layout = QHBoxLayout()
         for label, hours in [("过去1小时", 1), ("过去3小时", 3), ("过去6小时", 6), ("过去12小时", 12), ("今天", 24)]:
@@ -147,6 +193,10 @@ class TimeQueryWidget(QWidget):
 
         time_range_layout.addRow("快速选择:", quick_range_layout)
         config_layout.addWidget(self.time_range_widget)
+
+        # Track manual edits to clear hourly presets
+        self.start_datetime.dateTimeChanged.connect(self.on_manual_datetime_changed)
+        self.end_datetime.dateTimeChanged.connect(self.on_manual_datetime_changed)
 
         # Duration mode
         self.duration_widget = QWidget()
@@ -272,6 +322,7 @@ class TimeQueryWidget(QWidget):
         else:
             self.time_range_widget.hide()
             self.duration_widget.show()
+            self.clear_hourly_selection()
 
     def set_quick_range(self, hours: int):
         """Set quick time range"""
@@ -288,6 +339,55 @@ class TimeQueryWidget(QWidget):
 
         self.start_datetime.setDateTime(start_of_day)
         self.end_datetime.setDateTime(now)
+
+    def set_hourly_range(self, hour: int):
+        """Set time range using hourly preset"""
+        selected_date = self.hourly_date_edit.date()
+        if not selected_date.isValid():
+            QMessageBox.warning(self, "错误", "请选择有效的日期后再使用小时快捷查询")
+            return
+
+        if hour == 24:
+            # 24代表次日00点-01点
+            start_date = selected_date.addDays(1)
+            start_time = QTime(0, 0, 0)
+        else:
+            start_date = selected_date
+            start_time = QTime(hour, 0, 0)
+
+        start_datetime = QDateTime(start_date, start_time)
+        end_datetime = start_datetime.addSecs(3600)
+
+        # Ensure we stay in time-range mode
+        if not self.time_range_radio.isChecked():
+            self.time_range_radio.setChecked(True)
+
+        self._setting_hourly_range = True
+        self.start_datetime.setDateTime(start_datetime)
+        self.end_datetime.setDateTime(end_datetime)
+        self._setting_hourly_range = False
+
+    def on_manual_datetime_changed(self):
+        """Clear hourly selection when user manually adjusts time"""
+        if getattr(self, '_setting_hourly_range', False):
+            return
+        self.clear_hourly_selection()
+
+    def clear_hourly_selection(self):
+        """Reset hourly quick selection buttons"""
+        group = getattr(self, 'hour_button_group', None)
+        if not group:
+            return
+
+        was_exclusive = group.exclusive()
+        if was_exclusive:
+            group.setExclusive(False)
+
+        for button in group.buttons():
+            button.setChecked(False)
+
+        if was_exclusive:
+            group.setExclusive(True)
 
     def start_query(self):
         """Start time query"""

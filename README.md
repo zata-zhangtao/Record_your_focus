@@ -35,7 +35,7 @@ We've completely migrated from a PyQt desktop application to a modern **browser 
 - 🔄 **Automatic Screenshots**: Captures desktop every 1-60 minutes (customizable)
 - 🤖 **AI Analysis**: Qwen-VL vision models analyze screenshots with 95%+ accuracy
 - 📝 **Activity Timeline**: Browse, search, and filter your complete activity history
-- ⏰ **Time Query**: Ask AI "What did I do in the last 3 hours?"
+- ⏰ **Time Query**: Ask AI "What did I do in the last 3 hours?" with one-tap hourly presets (09–24) on both the web dashboard and legacy PyQt UI
 - 📊 **Statistics**: Track productivity, success rates, and activity patterns
 - 💾 **Data Export**: Export activities as JSON for external analysis
 - 🔐 **Privacy**: All data stored locally, you control everything
