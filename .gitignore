@@ -17,3 +17,4 @@ screenshots/
 activity_log.json
 activity_recorder.log
 activity_recorder_gui.log
+frontend/node_modules

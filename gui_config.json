@@ -2,34 +2,34 @@
   "window": {
     "width": 1453,
     "height": 800,
-    "x": 274,
-    "y": 193,
+    "x": 277,
+    "y": 252,
     "maximized": false
   },
   "recording": {
-    "interval": 180,
+    "interval": 300,
     "auto_start": false,
     "enable_thinking": true,
     "thinking_budget": 50
   },
   "api": {
     "api_key": "sk-1e631a8dda5f46cba0ef26a6bf1dcbd1",
-    "model_name": "qwen3-vl-plus-2025-09-23",
+    "model_name": "qwen3-vl-flash",
     "base_url": "https://dashscope.aliyuncs.com/api/v1"
   },
   "prompts": {
-    "default_prompt": "请分析这张屏幕截图，描述用户当前正在进行的活动。请用中文回答，并且简洁明了地描述：\n\n1. 用户正在使用什么应用程序或网站\n2. 用户正在进行什么具体活动（比如编程、浏览网页、写文档、看视频等）\n3. 如果能看出来，用户在处理什么具体内容\n\n请用一到两句话简洁地总结用户的当前活动。",
+    "default_prompt": "请分析这张屏幕截图，描述用户当前正在进行的活动。请用中文回答，并且简洁明了地描述：\n\n如果能看出来，用户在处理什么具体内容（最好细化到用户在解决什么问题）\n\n请用一到两句话简洁地总结用户的当前活动。",
     "custom_prompts": []
   },
   "ui": {
     "theme": "auto",
     "language": "zh_CN",
     "show_screenshots": true,
-    "compact_view": false
+    "compact_view": true
   },
   "data": {
     "keep_days": 30,
-    "keep_screenshots": 50,
+    "keep_screenshots": 800,
     "auto_cleanup": true,
     "export_format": "json"
   }
